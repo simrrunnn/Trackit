@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register — Trackit</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='Assets/logo.svg') }}" />
+  
+  <meta name="description" content="Create a free account to start tracking your monthly income and expenses." />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Trackit" />
+  <meta property="og:title"       content="Create Account — Trackit" />
+  <meta property="og:description" content="Create a free account to start tracking your monthly income and expenses." />
+  <meta property="og:url"         content="{{ request.url }}" />
+  <meta property="og:image"       content="{{ url_for('static', filename='Assets/og-preview.png', _external=True) }}" />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Create Account — Trackit" />
+  <meta name="twitter:description" content="Create a free account to start tracking your monthly income and expenses." />
+  <meta name="twitter:image"       content="{{ url_for('static', filename='Assets/og-preview.png', _external=True) }}" />
+
+  <meta name="theme-color" content="#0d1117" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
+</head>
+<body class="auth-body">
+
+  <div class="auth-wrapper">
+
+    <!-- Brand -->
+    <div class="auth-brand">
+      <img src="{{ url_for('static', filename='Assets/logo.svg') }}" alt="Trackit" class="auth-logo" />
+      <h1 class="auth-app-name">Trackit</h1>
+      <p class="auth-tagline">Personal Finance Dashboard</p>
+    </div>
+
+    <!-- Card -->
+    <div class="auth-card">
+      <h2 class="auth-title">Create an account</h2>
+      <p class="auth-subtitle">Start tracking your expenses today</p>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">
+              {{ '✓' if category == 'success' else '✕' }} {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input
+            class="form-input"
+            type="text"
+            name="username"
+            placeholder="e.g. sarah"
+            value="{{ request.form.get('username', '') }}"
+            required
+            autofocus
+          />
+          <span class="form-hint">Your Preferred Username</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input
+            class="form-input"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            value="{{ request.form.get('email', '') }}"
+            required
+          />
+        </div>
+
+        <!-- Password field: -->
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="password-wrap">
+            <input
+            class="form-input"
+            type="password"
+            name="password"
+            id="password"
+            placeholder="••••••••"
+            required
+            />
+            <button type="button" class="password-toggle" onclick="togglePassword('password', this)">👁</button>
+          </div>
+          <span class="form-hint">At least 6 characters</span>
+        </div>
+        
+        <!-- Confirm Password field: -->
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <div class="password-wrap">
+            <input
+            class="form-input"
+            type="password"
+            name="confirm_password"
+            id="confirm_password"
+            placeholder="••••••••"
+            required
+            />
+            <button type="button" class="password-toggle" onclick="togglePassword('confirm_password', this)">👁</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary auth-submit">
+          Create Account
+        </button>
+      </form>
+
+      <p class="auth-switch">
+        Already have an account?
+        <a href="{{ url_for('auth.login') }}">Sign in</a>
+      </p>
+    </div>
+
+  </div>
+  <footer class="app-footer" style="width:100%; margin-top: auto;">
+      <p>© <span id="footerYear"></span> Trackit &nbsp;·&nbsp; Made with <span class="footer-heart">♥</span> by <a href="https://www.simrunn.xyz/" target="_blank" class="footer-link">Simran</a></p>
+  </footer>
+
+  <script>
+      document.getElementById("footerYear").textContent = new Date().getFullYear();
+  </script>
+  <script src="{{ url_for('static', filename='js/modals.js') }}"></script>
+
+</body>
+</html>

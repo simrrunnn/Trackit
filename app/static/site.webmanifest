@@ -1,0 +1,16 @@
+{
+  "name": "Trackit",
+  "short_name": "Trackit",
+  "description": "Personal expense tracker and finance dashboard.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e0e14",
+  "theme_color": "#0e0e14",
+  "icons": [
+    {
+      "src": "/static/Assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

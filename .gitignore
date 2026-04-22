@@ -1,0 +1,41 @@
+# ── Python ────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ── Virtual Environment ────────────────────────────────────────
+.venv/
+venv/
+env/
+
+# ── Flask ─────────────────────────────────────────────────────
+instance/
+.env
+.flaskenv
+
+# ── Database ──────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Project Data (personal financial data) ────────────────────
+budget_data.json
+budget_export.csv
+spending_pie_chart.csv
+spending_pie_chart.png
+Expenses_data.json
+
+# ── Old assets (replaced by logo.svg) ────────────────────────
+app/static/Assets/logo.png
+app/static/Assets/favicon.jpg
+
+# ── macOS ─────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+
+# ── VS Code ───────────────────────────────────────────────────
+.vscode/
+*.code-workspace
+
+.github/

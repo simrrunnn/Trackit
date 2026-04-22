@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Your Personal Expenses Tracker{% endblock %}</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='Assets/logo.svg') }}" />
+
+  <!-- Primary Meta -->
+  <meta name="description" content="Track your monthly income and expenses, visualise spending by category, and export summaries to CSV — all in one clean dashboard." />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Open Graph (WhatsApp, Facebook, LinkedIn previews) -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Trackit" />
+  <meta property="og:title"       content="{% block og_title %}Trackit — Personal Finance Dashboard{% endblock %}" />
+  <meta property="og:description" content="Track your monthly income and expenses, visualise spending by category, and export summaries to CSV." />
+  <meta property="og:url"         content="{{ request.url }}" />
+  <meta property="og:image"       content="{{ url_for('static', filename='Assets/og-preview.png', _external=True) }}" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Trackit — Personal Finance Dashboard" />
+  <meta name="twitter:description" content="Track your monthly income and expenses, visualise spending by category, and export to CSV." />
+  <meta name="twitter:image"       content="{{ url_for('static', filename='Assets/og-preview.png', _external=True) }}" />
+
+  <!-- PWA / Mobile -->
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='Assets/logo.svg') }}" />
+  <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}" />
+  <meta name="theme-color" content="#0e0e14" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+  <!-- D3.js -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- GSAP Library -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  {% block head %}{% endblock %}
+</head>
+<body>
+<div class="layout">
+
+  <!-- ── Sidebar ────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="{{ url_for('static', filename='Assets/logo.svg') }}" alt="Trackit" class="sidebar-logo-icon" />
+      <span class="sidebar-logo-name">Trackit</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('main.dashboard') }}" class="{{ 'active' if request.endpoint == 'main.dashboard' }}">
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></span> Dashboard
+      </a>
+      <a href="{{ url_for('main.expenses') }}" class="{{ 'active' if request.endpoint == 'main.expenses' }}">
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hand-coins-icon lucide-hand-coins"><path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"/><path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 16 6 6"/><circle cx="16" cy="9" r="2.9"/><circle cx="6" cy="5" r="3"/></svg></span> Expenses
+      </a>
+      <a href="{{ url_for('main.settings') }}" class="{{ 'active' if request.endpoint == 'main.settings' }}">
+        <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings2-icon lucide-settings-2"><path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg></span> Settings
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="{{ url_for('main.export_csv') }}">
+        Export CSV <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b7cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right-icon lucide-arrow-up-right"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+      </a>
+      <a href="{{ url_for('main.contact') }}" class="{{ 'active' if request.endpoint == 'main.contact' }}">
+        Contact Developer <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b7cf6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ── Main ───────────────────────────────────────────────────── -->
+  <div class="main">
+
+    <header class="topbar">
+      <div class="topbar-title">{% block page_title %}{% endblock %}</div>
+      <div class="topbar-actions">
+        {% block topbar_actions %}{% endblock %}
+
+        <!-- User info + logout — shown on every page -->
+        {% if current_user.is_authenticated %}
+        <div class="topbar-user">
+          <div class="user-avatar">{{ current_user.username[0].upper() }}</div>
+          <span class="user-name">{{ current_user.username }}</span>
+        </div>
+        <button id="themeToggle" class="btn btn-ghost btn-sm" onclick="toggleTheme()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b7cf6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-moon-icon lucide-sun-moon">
+            <path d="M12 2v2"/><path d="M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715"/><path d="M16 12a4 4 0 0 0-4-4"/><path d="m19 5-1.256 1.256"/><path d="M20 12h2"/>
+          </svg>
+        </button>
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost btn-sm">Sign Out</a>
+        {% endif %}
+      </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">
+            {{ '✓' if category == 'success' else '✕' }} {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="page-content">
+      {% block content %}{% endblock %}
+    </div>
+
+    <!-- ── Footer ─────────────────────────────────────────────── -->
+    <footer class="app-footer">
+      <p>© <span id="footerYear"></span> Trackit &nbsp;·&nbsp; Made with <span class="footer-heart">♥</span> by <a href="https://www.simrunn.xyz/" target="_blank" class="footer-link">Simran</a></p>
+    </footer>
+
+  </div>
+</div>
+
+<!-- Shared JS: modal helpers used on every page -->
+<script src="{{ url_for('static', filename='js/modals.js') }}"></script>
+
+<!-- GSAP Animations -->
+<script src="{{ url_for('static', filename='js/gsap_animations.js') }}"></script>
+
+<!-- Dynamically sets the footer year to the current year -->
+<script>
+  document.getElementById("footerYear").textContent = new Date().getFullYear();
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — Trackit</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='Assets/logo.svg') }}" />
+  
+  <meta name="description" content="Sign in to your Trackit account to manage your monthly expenses and income." />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Trackit" />
+  <meta property="og:title"       content="Sign In — Trackit" />
+  <meta property="og:description" content="Sign in to track your monthly income and expenses." />
+  <meta property="og:url"         content="{{ request.url }}" />
+  <meta property="og:image"       content="{{ url_for('static', filename='Assets/og-preview.png', _external=True) }}" />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Sign In — Trackit" />
+  <meta name="twitter:description" content="Sign in to track your monthly income and expenses." />
+  <meta name="twitter:image"       content="{{ url_for('static', filename='Assets/og-preview.png', _external=True) }}" />
+
+  <meta name="theme-color" content="#0d1117" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
+</head>
+<body class="auth-body">
+
+  <div class="auth-wrapper">
+
+    <!-- Brand -->
+    <div class="auth-brand">
+      <img src="{{ url_for('static', filename='Assets/logo.svg') }}" alt="Trackit" class="auth-logo" />
+      <h1 class="auth-app-name">Trackit</h1>
+      <p class="auth-tagline">Your Personal Expense Tracker</p>
+    </div>
+
+    <!-- Card -->
+    <div class="auth-card">
+      <h2 class="auth-title">Welcome back</h2>
+      <p class="auth-subtitle">Sign in to your account</p>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">
+              {{ '✓' if category == 'success' else '✕' }} {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input
+            class="form-input"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            value="{{ request.form.get('email', '') }}"
+            required
+            autofocus
+          />
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; ...">
+            <label class="form-label" style="margin-bottom:0;">Password</label>
+            <a href="{{ url_for('auth.forgot_password') }}" class="auth-forgot-link">
+              Forgot password?
+            </a>
+          </div>
+          <div class="password-wrap">
+            <input
+            class="form-input"
+            type="password"
+            name="password"
+            id="password"
+            placeholder="••••••••"
+            required
+            />
+            <button type="button" class="password-toggle" onclick="togglePassword('password', this)">👁</button>
+          </div>
+        </div>
+
+        <div class="auth-remember">
+          <label class="remember-label">
+            <input type="checkbox" name="remember" class="remember-checkbox" />
+            <span>Remember me</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary auth-submit">
+          Sign In
+        </button>
+      </form>
+
+      <p class="auth-switch">
+        Don't have an account?
+        <a href="{{ url_for('auth.register') }}">Create one</a>
+      </p>
+    </div>
+
+  </div>
+  <footer class="app-footer">
+      <p>© <span id="footerYear"></span> Trackit &nbsp;·&nbsp; Made with <span class="footer-heart">♥</span> by <a href="https://www.simrunn.xyz/" target="_blank" class="footer-link">Simran</a></p>
+    </footer>
+
+    <script>
+      document.getElementById("footerYear").textContent = new Date().getFullYear();
+    </script>
+
+  <script src="{{ url_for('static', filename='js/modals.js') }}"></script>
+
+</body>
+</html>
